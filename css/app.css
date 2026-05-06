@@ -1,0 +1,171 @@
+/* ─── Trading Dashboard – Dark Professional Theme ─────────────────────────── */
+:root {
+  --bg:       #080d1a;
+  --bg1:      #0d1425;
+  --bg2:      #111928;
+  --bg3:      #1a2438;
+  --border:   #1e2d45;
+  --text:     #d4dff0;
+  --text2:    #7a90b0;
+  --green:    #00e676;
+  --green2:   #00c853;
+  --red:      #ff1744;
+  --red2:     #d50000;
+  --yellow:   #ffd600;
+  --blue:     #2979ff;
+  --blue2:    #1565c0;
+  --radius:   6px;
+  --shadow:   0 2px 16px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,sans-serif;font-size:14px;direction:rtl}
+button{cursor:pointer}
+.hidden{display:none!important}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.num{font-family:'Courier New',monospace;font-size:13px}
+.empty{text-align:center;color:var(--text2);padding:20px}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+#header{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg1);border-bottom:1px solid var(--border);
+  padding:10px 20px;position:sticky;top:0;z-index:100;
+}
+#header h1{font-size:18px;font-weight:700;letter-spacing:.5px;
+  background:linear-gradient(135deg,#2979ff,#00e676);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#clock{font-size:12px;color:var(--text2);font-family:monospace}
+.engine-status{
+  padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;
+  background:var(--bg3);
+}
+.engine-status.running {background:#0a2e1a;color:var(--green)}
+.engine-status.stopped {background:#2a0d12;color:var(--red)}
+.engine-status.starting{background:#1a2000;color:var(--yellow)}
+.engine-status.closed  {background:#1a1a2e;color:var(--text2)}
+#sub-status{font-size:11px;color:var(--text2);margin-top:2px;text-align:center}
+
+/* ── Layout ────────────────────────────────────────────────────────────────── */
+#layout{display:grid;grid-template-columns:220px 1fr 280px;height:calc(100vh - 52px)}
+
+/* ── Sidebar ───────────────────────────────────────────────────────────────── */
+#sidebar{background:var(--bg1);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.sidebar-section{padding:12px;border-bottom:1px solid var(--border)}
+.sidebar-section h3{font-size:11px;text-transform:uppercase;color:var(--text2);letter-spacing:1px;margin-bottom:8px}
+
+.btn{
+  display:block;width:100%;padding:9px;margin-bottom:6px;border:none;
+  border-radius:var(--radius);font-size:13px;font-weight:600;transition:opacity .15s;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:var(--green2);color:#000}
+.btn-green:hover:not(:disabled){background:var(--green)}
+.btn-blue{background:var(--blue2);color:#fff}
+.btn-blue:hover:not(:disabled){background:var(--blue)}
+.btn-red{background:var(--red2);color:#fff}
+.btn-red:hover:not(:disabled){background:var(--red)}
+.btn-gray{background:var(--bg3);color:var(--text)}
+.btn-gray:hover{background:var(--border)}
+.btn-sm{padding:6px;font-size:12px}
+
+/* Metric cards */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px}
+.metric-label{font-size:10px;color:var(--text2);margin-bottom:3px}
+.metric-value{font-size:14px;font-weight:700;font-family:monospace}
+
+/* Watchlist */
+.wl-item{display:flex;justify-content:space-between;align-items:center;padding:4px 6px;border-radius:4px;font-size:12px}
+.wl-item:hover{background:var(--bg3)}
+.wl-sym{font-weight:600;color:var(--blue)}
+.wl-item .price{font-family:monospace;font-size:11px;color:var(--text2)}
+
+/* ── Main ──────────────────────────────────────────────────────────────────── */
+#main{background:var(--bg);overflow-y:auto;display:flex;flex-direction:column}
+
+/* Tabs */
+.tabs{display:flex;background:var(--bg1);border-bottom:1px solid var(--border);padding:0 12px}
+.tab{padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);border:none;background:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab:hover:not(.active){color:var(--text)}
+
+/* Positions table */
+.table-wrap{overflow-x:auto;flex:1}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg2);border-bottom:1px solid var(--border)}
+th{padding:8px 10px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--text2);letter-spacing:.5px;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:13px}
+tr:hover td{background:var(--bg2)}
+.side-badge{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.side-badge.buy,.side-badge.long{background:#0a2e1a;color:var(--green)}
+.side-badge.sell,.side-badge.short{background:#2a0d12;color:var(--red)}
+.status-badge{padding:2px 6px;border-radius:4px;font-size:11px;background:var(--bg3);color:var(--text2)}
+
+/* Signals grid */
+#signals-grid{display:flex;flex-wrap:wrap;gap:10px;padding:12px}
+.signal-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px;width:160px;
+}
+.signal-card.buy {border-color:var(--green);background:#0a1a12}
+.signal-card.sell{border-color:var(--red);background:#1a0a0d}
+.sig-sym{font-size:15px;font-weight:700;margin-bottom:4px}
+.sig-type{font-size:12px;font-weight:600;margin-bottom:4px}
+.signal-card.buy  .sig-type{color:var(--green)}
+.signal-card.sell .sig-type{color:var(--red)}
+.sig-price{font-family:monospace;font-size:13px;margin-bottom:3px}
+.sig-reason{font-size:10px;color:var(--text2);margin-bottom:3px}
+.sig-vol{font-size:10px;color:var(--text2)}
+
+/* ── Right Panel (News) ─────────────────────────────────────────────────────── */
+#right-panel{background:var(--bg1);border-right:1px solid var(--border);overflow-y:auto}
+#right-panel h3{font-size:11px;text-transform:uppercase;color:var(--text2);letter-spacing:1px;padding:10px 12px;border-bottom:1px solid var(--border)}
+
+/* Alerts */
+#alert-feed{padding:6px}
+.alert{
+  padding:7px 10px;margin-bottom:5px;border-radius:var(--radius);
+  font-size:12px;border-right:3px solid transparent;background:var(--bg2);
+}
+.alert-info   {border-color:var(--blue)}
+.alert-success{border-color:var(--green);background:#0a1a12}
+.alert-warn   {border-color:var(--yellow);background:#1a1600}
+.alert-error  {border-color:var(--red);background:#1a0a0d}
+.alert-time{color:var(--text2);font-size:10px;margin-left:6px;font-family:monospace}
+
+/* ── Settings Modal ─────────────────────────────────────────────────────────── */
+#settings-modal{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;
+}
+.settings-box{
+  background:var(--bg1);border:1px solid var(--border);border-radius:10px;
+  width:min(720px,95vw);max-height:90vh;overflow-y:auto;padding:24px;
+}
+.settings-box h2{font-size:17px;font-weight:700;margin-bottom:18px;color:var(--blue)}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:12px;color:var(--text2)}
+.field input,.field select{
+  background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  padding:7px 10px;border-radius:var(--radius);font-size:13px;
+  outline:none;transition:border-color .15s;
+}
+.field input:focus,.field select:focus{border-color:var(--blue)}
+.settings-sep{grid-column:1/-1;font-size:11px;text-transform:uppercase;color:var(--text2);
+  letter-spacing:1px;padding-top:8px;border-top:1px solid var(--border)}
+.settings-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+.settings-actions button{width:auto;padding:9px 24px}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text2)}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media(max-width:900px){
+  #layout{grid-template-columns:1fr}
+  #sidebar,#right-panel{display:none}
+}
