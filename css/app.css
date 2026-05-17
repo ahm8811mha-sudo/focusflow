@@ -233,21 +233,7 @@ tr:hover td{background:var(--bg2)}
 ::-webkit-scrollbar-thumb:hover{background:var(--text2)}
 
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
-@media(max-width:900px){
-  #layout{grid-template-columns:1fr;height:calc(100vh - 52px - 48px)}
-  #sidebar,#right-panel{display:none}
-  /* Mobile portfolio bar */
-  #mobile-bar{display:flex}
-  /* Compact header */
-  #header h1{font-size:15px}
-  #clock{font-size:10px}
-  .engine-status{font-size:11px;padding:3px 9px}
-}
-@media(min-width:901px){
-  #mobile-bar{display:none!important}
-}
-
-/* Mobile portfolio quick-bar */
+/* Mobile portfolio quick-bar – base style (desktop: hidden) */
 #mobile-bar{
   display:none;align-items:center;gap:6px;overflow-x:auto;
   background:var(--bg1);border-bottom:1px solid var(--border);
@@ -264,3 +250,13 @@ tr:hover td{background:var(--bg2)}
 .mobile-port-chip.running{background:#0a2e1a;border-color:var(--green);color:var(--green)}
 .mobile-port-chip.stopped{color:var(--text2)}
 .mobile-port-chip .chip-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* ── Responsive ── base styles above, media queries override below ─────────── */
+@media(max-width:900px){
+  #layout{grid-template-columns:1fr;height:calc(100vh - 52px - 48px)}
+  #sidebar,#right-panel{display:none}
+  #mobile-bar{display:flex!important}
+  #header h1{font-size:15px}
+  #clock{font-size:10px}
+  .engine-status{font-size:11px;padding:3px 9px}
+}

@@ -1,4 +1,4 @@
-const CACHE = 'autotrader-v2';
+const CACHE = 'autotrader-v3';
 const STATIC = ['./', './index.html', './css/app.css',
   './js/app.js', './js/config.js', './js/events.js',
   './js/indicators.js', './js/strategy.js', './js/risk.js',
@@ -7,14 +7,22 @@ const STATIC = ['./', './index.html', './css/app.css',
   './js/broker/alpaca.js', './js/broker/saudi.js'];
 
 self.addEventListener('install', e =>
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(STATIC))));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => c.addAll(STATIC))
+      .then(() => self.skipWaiting())   // activate immediately, don't wait
+  )
+);
 
 self.addEventListener('activate', e =>
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))));
+  e.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())  // take control of all open tabs now
+  )
+);
 
 self.addEventListener('fetch', e => {
-  // Never cache API calls
   if (e.request.url.includes('alpaca.markets') ||
       e.request.url.includes('finnhub.io') ||
       e.request.url.includes('alphavantage.co')) return;
