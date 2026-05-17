@@ -22,6 +22,7 @@ export const UI = {
     this._renderWatchlist();
     this._renderPortfolioSidebar();
     this._renderPortfolioSettings();
+    this._renderMobileBar();
   },
 
   // ── EventBus subscriptions ─────────────────────────────────────────────────
@@ -79,11 +80,13 @@ export const UI = {
       Config.addPortfolio('US');
       this._renderPortfolioSidebar();
       this._renderPortfolioSettings();
+      this._renderMobileBar();
     });
     $('settings-add-sa')?.addEventListener('click', () => {
       Config.addPortfolio('SA');
       this._renderPortfolioSidebar();
       this._renderPortfolioSettings();
+      this._renderMobileBar();
     });
 
     // Suggestions scan button
@@ -169,6 +172,32 @@ export const UI = {
     const stopBtn  = document.querySelector(`[data-pid="${pid}"].port-stop`);
     if (startBtn) startBtn.disabled = (state === 'running' || state === 'starting');
     if (stopBtn)  stopBtn.disabled  = (state === 'stopped');
+    this._renderMobileBar();
+  },
+
+  _renderMobileBar() {
+    const bar = $('mobile-bar');
+    if (!bar) return;
+    const portfolios = Config.getPortfolios();
+    bar.innerHTML = portfolios.map(p => {
+      const running = PortfolioManager.isRunning(p.id);
+      const flag    = p.market === 'US' ? '🇺🇸' : '🇸🇦';
+      const label   = running ? 'إيقاف' : 'بدء';
+      return `<div class="mobile-port-chip ${running ? 'running' : 'stopped'}" data-pid="${p.id}">
+        <span class="chip-dot"></span>${flag} ${p.name} · ${label}
+      </div>`;
+    }).join('') + `<div class="mobile-port-chip" id="mobile-settings-btn" style="border-color:var(--blue);color:var(--blue)">⚙️ إعدادات</div>`;
+
+    bar.querySelectorAll('.mobile-port-chip[data-pid]').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const pid = chip.dataset.pid;
+        if (PortfolioManager.isRunning(pid)) PortfolioManager.stop(pid);
+        else {
+          if (!PortfolioManager.start(pid)) this.addAlert('تحقق من بيانات API في الإعدادات', 'warn');
+        }
+      });
+    });
+    $('mobile-settings-btn')?.addEventListener('click', () => this._switchTab('settings'));
   },
 
   _renderPortfolioMetrics(acct) {
@@ -486,6 +515,7 @@ export const UI = {
     Config.setMany(obj);
     this._renderPortfolioSidebar();
     this._renderWatchlist();
+    this._renderMobileBar();
     this.addAlert('✅ تم حفظ الإعدادات', 'success');
   },
 

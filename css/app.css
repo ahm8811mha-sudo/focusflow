@@ -85,8 +85,9 @@ button{cursor:pointer}
 #main{background:var(--bg);overflow-y:auto;display:flex;flex-direction:column}
 
 /* Tabs */
-.tabs{display:flex;background:var(--bg1);border-bottom:1px solid var(--border);padding:0 12px}
-.tab{padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);border:none;background:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s}
+.tabs{display:flex;background:var(--bg1);border-bottom:1px solid var(--border);padding:0 12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;white-space:nowrap;flex-shrink:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 14px;font-size:13px;font-weight:500;color:var(--text2);border:none;background:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;flex-shrink:0}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 .tab:hover:not(.active){color:var(--text)}
 
@@ -233,6 +234,33 @@ tr:hover td{background:var(--bg2)}
 
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 @media(max-width:900px){
-  #layout{grid-template-columns:1fr}
+  #layout{grid-template-columns:1fr;height:calc(100vh - 52px - 48px)}
   #sidebar,#right-panel{display:none}
+  /* Mobile portfolio bar */
+  #mobile-bar{display:flex}
+  /* Compact header */
+  #header h1{font-size:15px}
+  #clock{font-size:10px}
+  .engine-status{font-size:11px;padding:3px 9px}
 }
+@media(min-width:901px){
+  #mobile-bar{display:none!important}
+}
+
+/* Mobile portfolio quick-bar */
+#mobile-bar{
+  display:none;align-items:center;gap:6px;overflow-x:auto;
+  background:var(--bg1);border-bottom:1px solid var(--border);
+  padding:6px 10px;scrollbar-width:none;white-space:nowrap;
+  height:48px;flex-shrink:0;
+}
+#mobile-bar::-webkit-scrollbar{display:none}
+.mobile-port-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:20px;
+  padding:4px 10px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;
+  flex-shrink:0;
+}
+.mobile-port-chip.running{background:#0a2e1a;border-color:var(--green);color:var(--green)}
+.mobile-port-chip.stopped{color:var(--text2)}
+.mobile-port-chip .chip-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
