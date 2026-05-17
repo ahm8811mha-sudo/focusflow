@@ -134,17 +134,11 @@ tr:hover td{background:var(--bg2)}
 .alert-error  {border-color:var(--red);background:#1a0a0d}
 .alert-time{color:var(--text2);font-size:10px;margin-left:6px;font-family:monospace}
 
-/* ── Settings Modal ─────────────────────────────────────────────────────────── */
-#settings-modal{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;
-}
-.settings-box{
-  background:var(--bg1);border:1px solid var(--border);border-radius:10px;
-  width:min(720px,95vw);max-height:90vh;overflow-y:auto;padding:24px;
-}
-.settings-box h2{font-size:17px;font-weight:700;margin-bottom:18px;color:var(--blue)}
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* ── Settings Inline Panel ──────────────────────────────────────────────────── */
+.settings-panel{overflow-y:auto;flex:1}
+.settings-inner{max-width:760px;padding:20px;margin:0 auto}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+.settings-full{grid-column:1/-1}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:12px;color:var(--text2)}
 .field input,.field select{
@@ -153,10 +147,83 @@ tr:hover td{background:var(--bg2)}
   outline:none;transition:border-color .15s;
 }
 .field input:focus,.field select:focus{border-color:var(--blue)}
-.settings-sep{grid-column:1/-1;font-size:11px;text-transform:uppercase;color:var(--text2);
-  letter-spacing:1px;padding-top:8px;border-top:1px solid var(--border)}
-.settings-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
-.settings-actions button{width:auto;padding:9px 24px}
+.settings-sep{
+  grid-column:1/-1;font-size:11px;text-transform:uppercase;color:var(--text2);
+  letter-spacing:1px;padding:10px 0 8px;border-top:1px solid var(--border);
+  margin:10px 0 6px;
+}
+
+/* ── Portfolio Cards (sidebar) ──────────────────────────────────────────────── */
+.port-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px;margin-bottom:8px;
+}
+.port-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.port-name{font-size:12px;font-weight:600;color:var(--text)}
+.port-status{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--bg3)}
+.port-status.running {background:#0a2e1a;color:var(--green)}
+.port-status.stopped {background:#2a0d12;color:var(--red)}
+.port-status.starting{background:#1a2000;color:var(--yellow)}
+.port-metrics{display:flex;justify-content:space-between;font-family:monospace;font-size:12px;margin-bottom:7px}
+.port-equity{color:var(--text)}
+.port-pnl{color:var(--text2)}
+.port-pnl.green{color:var(--green)}
+.port-pnl.red  {color:var(--red)}
+.port-card-actions{display:flex;gap:6px}
+.port-card-actions .btn{flex:1;margin:0}
+
+/* ── Portfolio Edit Forms (settings tab) ────────────────────────────────────── */
+.pf-edit{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  margin-bottom:10px;overflow:hidden;
+}
+.pf-edit-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;background:var(--bg3);
+}
+.pf-toggle-btn{
+  flex:1;background:none;border:none;color:var(--text);font-size:13px;
+  font-weight:600;text-align:right;cursor:pointer;padding:0;
+}
+.pf-toggle-btn:hover{color:var(--blue)}
+.pf-edit-body{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pf-delete-btn{flex-shrink:0}
+
+/* ── Suggestions ────────────────────────────────────────────────────────────── */
+.sugg-panel-wrap{display:flex;flex-direction:column;height:100%}
+.sugg-toolbar{
+  padding:14px 16px 10px;border-bottom:1px solid var(--border);
+  background:var(--bg1);
+}
+#suggestions-grid{display:flex;flex-wrap:wrap;gap:10px}
+.sugg-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px;width:180px;display:flex;flex-direction:column;gap:6px;
+}
+.sugg-card.buy    {border-color:var(--green);background:#071a0f}
+.sugg-card.sell   {border-color:var(--red);background:#1a070a}
+.sugg-card.neutral{border-color:var(--border)}
+.sugg-header{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.sugg-sym{font-size:15px;font-weight:700}
+.sugg-market{font-size:14px}
+.sugg-signal-badge{font-size:11px;font-weight:600;padding:2px 6px;border-radius:10px;background:var(--bg3)}
+.sugg-signal-badge.buy {background:#0a2e1a;color:var(--green)}
+.sugg-signal-badge.sell{background:#2a0d12;color:var(--red)}
+.sugg-signal-badge.neutral{color:var(--text2)}
+.sugg-score-row{display:flex;align-items:center;gap:6px}
+.sugg-score-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.sugg-score-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:3px;transition:width .4s}
+.sugg-card.sell .sugg-score-fill{background:linear-gradient(90deg,var(--red2),var(--red))}
+.sugg-score-num{font-size:12px;font-family:monospace;font-weight:700;min-width:24px;text-align:left}
+.sugg-indicators{display:flex;flex-wrap:wrap;gap:4px 8px;font-size:10px;color:var(--text2)}
+.sugg-reason{font-size:10px;color:var(--text2);font-family:monospace;word-break:break-all}
+
+/* ── News items ─────────────────────────────────────────────────────────────── */
+.news-item{padding:8px 10px;margin-bottom:6px;border-radius:var(--radius);background:var(--bg2);border-right:3px solid var(--border)}
+.news-item.news-high{border-color:var(--red);background:#1a0a0d}
+.news-time{font-size:10px;color:var(--text2);font-family:monospace;margin-bottom:3px}
+.news-headline{font-size:12px;line-height:1.4}
+.news-syms{font-size:10px;color:var(--blue);margin-top:3px}
 
 /* ── Scrollbar ──────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar{width:5px;height:5px}

@@ -1,8 +1,9 @@
-const CACHE = 'autotrader-v1';
+const CACHE = 'autotrader-v2';
 const STATIC = ['./', './index.html', './css/app.css',
   './js/app.js', './js/config.js', './js/events.js',
   './js/indicators.js', './js/strategy.js', './js/risk.js',
   './js/news.js', './js/engine.js', './js/ui.js',
+  './js/portfolio.js', './js/suggestions.js',
   './js/broker/alpaca.js', './js/broker/saudi.js'];
 
 self.addEventListener('install', e =>

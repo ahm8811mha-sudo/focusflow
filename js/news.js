@@ -1,6 +1,5 @@
 // ─── News & Economic Calendar ──────────────────────────────────────────────────
 import { Config } from './config.js';
-import { AlpacaBroker } from './broker/alpaca.js';
 
 const IMPACT_KEYWORDS = [
   'fed', 'fomc', 'interest rate', 'cpi', 'inflation', 'gdp', 'unemployment',
@@ -15,9 +14,22 @@ export const NewsScanner = {
   highImpactSymbols: new Set(),
   lastFetch: 0,
 
+  _getUSPortfolio() {
+    return Config.getPortfolios().find(p => p.market === 'US' && p.key && p.secret);
+  },
+
   async fetchNews(symbols = []) {
+    const portfolio = this._getUSPortfolio();
+    if (!portfolio) return [];
     try {
-      const items = await AlpacaBroker.getNews(symbols, 30);
+      const symParam = symbols.length ? `&symbols=${symbols.join(',')}` : '';
+      const res = await fetch(
+        `https://data.alpaca.markets/v1beta1/news?limit=30${symParam}`,
+        { headers: { 'APCA-API-KEY-ID': portfolio.key, 'APCA-API-SECRET-KEY': portfolio.secret } }
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      const items = data.news || [];
       this.latestNews = items.map(n => ({
         id: n.id,
         headline: n.headline,
@@ -64,7 +76,7 @@ export const NewsScanner = {
 
   _updateHighImpactSymbols() {
     this.highImpactSymbols.clear();
-    const cutoff = new Date(Date.now() - 30 * 60 * 1000); // last 30 min
+    const cutoff = new Date(Date.now() - 30 * 60 * 1000);
     for (const n of this.latestNews) {
       if (n.impact === 'high' && n.createdAt >= cutoff) {
         n.symbols.forEach(s => this.highImpactSymbols.add(s));

@@ -1,29 +1,31 @@
 // ─── Configuration Manager ────────────────────────────────────────────────────
 const DEFAULTS = {
-  // Broker Settings
-  alpacaMode: 'paper',          // 'paper' | 'live'
+  // Legacy single-broker (migrated to portfolios array on first load)
+  alpacaMode: 'paper',
   alpacaKey: '',
   alpacaSecret: '',
-  saudiBaseUrl: '',             // Your Saudi broker REST base URL
+  saudiBaseUrl: '',
   saudiKey: '',
   saudiSecret: '',
-  activeMarket: 'US',           // 'US' | 'SA' | 'BOTH'
+
+  // Multi-portfolio
+  portfolios: [],
 
   // Strategy Parameters
-  volatilityMax: 0.005,         // Max ATR/Price = 0.5% (0:50)
-  takeProfitPct: 0.003,         // 0.3% TP
-  stopLossPct: 0.002,           // 0.2% SL
+  volatilityMax: 0.005,
+  takeProfitPct: 0.003,
+  stopLossPct: 0.002,
   rsiOversold: 35,
   rsiOverbought: 65,
   bbDeviation: 2,
   scanIntervalSec: 30,
 
   // Risk Management
-  riskPerTrade: 0.005,          // 0.5% account risk per trade
+  riskPerTrade: 0.005,
   maxPositions: 5,
-  dailyLossLimit: 0.02,         // 2% daily max loss
+  dailyLossLimit: 0.02,
   maxDailyTrades: 30,
-  closeMinutesBeforeEnd: 15,    // Exit all X min before market close
+  closeMinutesBeforeEnd: 15,
 
   // Watchlists
   usWatchlist: ['SPY','QQQ','AAPL','MSFT','NVDA','AMZN','META','GOOGL','TSLA','AMD',
@@ -34,7 +36,8 @@ const DEFAULTS = {
   // Notifications
   enableSound: true,
   enableAlerts: true,
-  finnhubKey: '',               // Free: finnhub.io
+  finnhubKey: '',
+  alphaVantageKey: '',
 
   // UI
   theme: 'dark',
@@ -51,7 +54,32 @@ export const Config = {
     } catch {
       this._data = { ...DEFAULTS };
     }
+    this._migrateLegacy();
     return this;
+  },
+
+  _migrateLegacy() {
+    if (!Array.isArray(this._data.portfolios) || this._data.portfolios.length === 0) {
+      this._data.portfolios = [
+        {
+          id: 'p_us_1',
+          name: 'محفظة أمريكية 1',
+          market: 'US',
+          mode: this._data.alpacaMode || 'paper',
+          key: this._data.alpacaKey || '',
+          secret: this._data.alpacaSecret || '',
+        },
+        {
+          id: 'p_sa_1',
+          name: 'محفظة سعودية 1',
+          market: 'SA',
+          baseUrl: this._data.saudiBaseUrl || '',
+          key: this._data.saudiKey || '',
+          secret: this._data.saudiSecret || '',
+        },
+      ];
+      this.save();
+    }
   },
 
   save() {
@@ -72,16 +100,55 @@ export const Config = {
     this.save();
   },
 
+  getPortfolios() {
+    return this._data.portfolios || [];
+  },
+
+  getPortfolio(id) {
+    return (this._data.portfolios || []).find(p => p.id === id);
+  },
+
+  savePortfolio(portfolio) {
+    const arr = this._data.portfolios || [];
+    const idx = arr.findIndex(p => p.id === portfolio.id);
+    if (idx >= 0) arr[idx] = { ...arr[idx], ...portfolio };
+    else arr.push(portfolio);
+    this._data.portfolios = arr;
+    this.save();
+  },
+
+  deletePortfolio(id) {
+    this._data.portfolios = (this._data.portfolios || []).filter(p => p.id !== id);
+    this.save();
+  },
+
+  addPortfolio(market) {
+    const portfolios = this._data.portfolios || [];
+    const count = portfolios.filter(p => p.market === market).length;
+    const id = `p_${market.toLowerCase()}_${Date.now()}`;
+    const portfolio = market === 'US'
+      ? { id, name: `محفظة أمريكية ${count + 1}`, market: 'US', mode: 'paper', key: '', secret: '' }
+      : { id, name: `محفظة سعودية ${count + 1}`, market: 'SA', baseUrl: '', key: '', secret: '' };
+    portfolios.push(portfolio);
+    this._data.portfolios = portfolios;
+    this.save();
+    return portfolio;
+  },
+
+  isPortfolioConfigured(portfolio) {
+    if (!portfolio) return false;
+    if (portfolio.market === 'US') return !!(portfolio.key && portfolio.secret);
+    if (portfolio.market === 'SA') return !!(portfolio.baseUrl && portfolio.key);
+    return false;
+  },
+
+  // Legacy compat (used by broker files / news)
   getAlpacaBase() {
     return this._data.alpacaMode === 'live'
       ? 'https://api.alpaca.markets'
       : 'https://paper-api.alpaca.markets';
   },
-
-  getAlpacaDataBase() {
-    return 'https://data.alpaca.markets';
-  },
-
+  getAlpacaDataBase() { return 'https://data.alpaca.markets'; },
   getAlpacaHeaders() {
     return {
       'APCA-API-KEY-ID': this._data.alpacaKey,
@@ -89,7 +156,6 @@ export const Config = {
       'Content-Type': 'application/json',
     };
   },
-
   getSaudiHeaders() {
     return {
       'Authorization': `Bearer ${this._data.saudiKey}`,
@@ -97,7 +163,6 @@ export const Config = {
       'Content-Type': 'application/json',
     };
   },
-
   isConfigured(market) {
     if (market === 'US') return !!(this._data.alpacaKey && this._data.alpacaSecret);
     if (market === 'SA') return !!(this._data.saudiBaseUrl && this._data.saudiKey);
